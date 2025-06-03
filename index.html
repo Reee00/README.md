@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>App Kantin Kampus - Prototipe Mobile Interaktif</title>
+    <style>
+        /* Reset and base */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+            color: #333;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow: hidden;
+        }
+        #app {
+            max-width: 420px;
+            margin: 0 auto;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            position: relative;
+        }
+        header {
+            flex-shrink: 0;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            padding: 16px 20px;
+            color: white;
+            font-weight: 700;
+            font-size: 1.25rem;
+            text-align: center;
+            user-select: none;
+        }
+        main {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #f8f9fa;
+            /* Leave space bottom nav */
+            margin-bottom: 60px;
+        }
+        /* Screens */
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+
+        /* --- Login Screen --- */
+        .login-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 20px;
+            padding: 30px 20px;
+            height: 100%;
+            justify-content: center;
+        }
+        .login-logo {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+        .login-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            user-select: none;
+        }
+        .login-subtitle {
+            font-weight: 400;
+            opacity: 0.8;
+            margin-bottom: 30px;
+            user-select: none;
+        }
+        .input-group {
+            width: 100%;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            font-weight: 600;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+            display: block;
+            user-select: none;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: rgba(255,255,255,0.9);
+            color: #333;
+            box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+            transition: background 0.3s ease;
+        }
+        input[type="text"]::placeholder {
+            color: #666;
+        }
+        input[type="text"]:focus {
+            outline: none;
+            background: #fff;
+            box-shadow: 0 0 6px #4CAF50;
+        }
+        button.login-btn {
+            width: 100%;
+            background: #4CAF50;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            padding: 16px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            user-select: none;
+        }
+        button.login-btn:hover:not(:disabled) {
+            background: #45a049;
+        }
+        button.login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* --- Home Screen --- */
+        .greeting {
+            display: flex;
+            align-items: center;
+            margin-bottom: 25px;
+            padding: 15px;
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border-radius: 15px;
+            user-select: none;
+        }
+        .greeting-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+        .greeting-text h2 {
+            color: #1976d2;
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+        }
+        .greeting-text p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .time-selector {
+            margin-bottom: 25px;
+        }
+        .time-selector h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1rem;
+            user-select: none;
+        }
+        .time-buttons {
+            display: flex;
+            gap: 10px;
+        }
+        .time-btn {
+            flex: 1;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            user-select: none;
+        }
+        .time-btn.active {
+            background: #4CAF50;
+            color: white;
+            border-color: #4CAF50;
+        }
+        .popular-menu {
+            margin-bottom: 25px;
+        }
+        .popular-menu h3 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 1.1rem;
+            user-select: none;
+        }
+        .menu-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.3s ease;
+            user-select: none;
+        }
+        .menu-item:hover {
+            background: #e8f5e8;
+            transform: translateX(5px);
+        }
+        .menu-icon {
+            font-size: 2rem;
+            margin-right: 15px;
+        }
+        .menu-info {
+            flex: 1;
+        }
+        .menu-name {
+            font-weight: 600;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .menu-price {
+            color: #4CAF50;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+        .stock-info {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 3px;
+        }
+        button.view-all-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            user-select: none;
+        }
+        button.view-all-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* --- Menu Screen --- */
+        .search-bar {
+            margin-bottom: 20px;
+        }
+        .search-input {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #f8f9fa;
+            user-select: none;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: #4CAF50;
+            background: white;
+        }
+        .categories {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            overflow-x: auto;
+            scrollbar-width: thin;
+        }
+        .category-btn {
+            padding: 10px 20px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            user-select: none;
+        }
+        .category-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+        .menu-grid {
+            display: grid;
+            gap: 15px;
+        }
+        .menu-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+        }
+        .menu-card:hover {
+            border-color: #4CAF50;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.15);
+        }
+        .menu-card-info {
+            flex: 1;
+        }
+        button.add-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+            user-select: none;
+        }
+        button.add-btn:hover {
+            background: #45a049;
+        }
+
+        /* --- Cart Screen --- */
+        .order-time {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+            user-select: none;
+        }
+        .order-time h3 {
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        .order-time p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        .cart-items {
+            margin-bottom: 20px;
+        }
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #e0e0e0;
+            user-select: none;
+        }
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #e0e0e0;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+        .qty-btn:active {
+            background: #f0f0f0;
+        }
+        .total-section {
+            border-top: 2px solid #e0e0e0;
+            padding-top: 20px;
+            margin-bottom: 20px;
+            user-select: none;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: #333;
+        }
+        .total-final {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #4CAF50;
+        }
+        .payment-section {
+            margin-bottom: 20px;
+            user-select: none;
+        }
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: background 0.3s ease, border-color 0.3s ease;
+        }
+        .payment-option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+        .payment-option input[type="radio"] {
+            margin-right: 10px;
+            cursor: pointer;
+        }
+        button.order-btn {
+            width: 100%;
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            user-select: none;
+        }
+        button.order-btn:hover {
+            transform: translateY(-2px);
+        }
+        .info-box {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: #856404;
+            user-select: none;
+        }
+
+        /* Scrollbar styles for Webkit */
+        main::-webkit-scrollbar {
+            width: 6px;
+        }
+        main::-webkit-scrollbar-thumb {
+            background-color: rgba(0,0,0,0.1);
+            border-radius: 3px;
+        }
+
+        /* Bottom Navigation Bar */
+        nav.bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 420px;
+            max-width: 100vw;
+            height: 60px;
+            background: white;
+            border-top: 1px solid #ddd;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            z-index: 10;
+            box-shadow: 0 -1px 10px rgba(0,0,0,0.05);
+            border-radius: 0 0 20px 20px;
+            visibility: hidden; /* Hide by default */
+            opacity: 0;
+            transition: visibility 0s linear 0.3s, opacity 0.3s ease;
+        }
+        nav.bottom-nav.visible {
+            visibility: visible;
+            opacity: 1;
+            transition-delay: 0s;
+        }
+        nav.bottom-nav button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            font-size: 0.75rem;
+            color: #666;
+            padding: 6px 0 4px 0;
+            user-select: none;
+            transition: color 0.3s ease;
+        }
+        nav.bottom-nav button svg {
+            width: 24px;
+            height: 24px;
+            margin-bottom: 2px;
+            fill: currentColor;
+        }
+        nav.bottom-nav button.active {
+            color: #4CAF50;
+            font-weight: 700;
+        }
+        nav.bottom-nav button:focus {
+            outline: none;
+            color: #388e3c;
+        }
+
+        /* Responsive text and spacing */
+        @media (max-width: 420px) {
+            #app {
+                height: 100vh;
+                border-radius: 0;
+            }
+            button.login-btn,
+            button.view-all-btn,
+            button.order-btn {
+                font-size: 1rem;
+                padding: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="app" role="main" aria-label="Aplikasi Kantin Kampus">
+    <header aria-live="polite" aria-atomic="true" id="app-header">Login</header>
+    <main>
+        <!-- Login Screen -->
+        <section class="screen login-screen active" id="screen-login" tabindex="0" aria-label="Layar Login">
+            <div class="login-logo" aria-hidden="true">🏫</div>
+            <h1 class="login-title">Kantin UNPAM</h1>
+            <p class="login-subtitle">Pesan makanan tanpa antri panjang!</p>
+            <form id="login-form" novalidate>
+                <div class="input-group">
+                    <label for="nim">NIM (Nomor Induk Mahasiswa)</label>
+                    <input type="text" id="nim" name="nim" placeholder="Masukkan NIM kamu" maxlength="13" inputmode="numeric" pattern="\\d{13}" required aria-describedby="nim-error" aria-invalid="false" />
+                    <span id="nim-error" role="alert" style="color: #ff4d4f; font-size: 0.85rem; display:none;">NIM harus 13 digit angka.</span>
+                </div>
+                <div class="input-group">
+                    <label for="nama">Nama Lengkap</label>
+                    <input type="text" id="nama" name="nama" placeholder="Masukkan nama lengkap" required aria-describedby="nama-error" aria-invalid="false" />
+                    <span id="nama-error" role="alert" style="color: #ff4d4f; font-size: 0.85rem; display:none;">Nama tidak boleh kosong.</span>
+                </div>
+                <button type="submit" class="login-btn" aria-live="polite">Masuk ke Kantin</button>
+            </form>
+        </section>
+
+        <!-- Home Screen -->
+        <section class="screen" id="screen-home" tabindex="-1" aria-label="Layar Beranda">
+            <div class="greeting" role="region" aria-live="polite">
+                <div class="greeting-icon" aria-hidden="true">👋</div>
+                <div class="greeting-text">
+                    <h2 id="username">Hai, Budi!</h2>
+                    <p>Mau pesan apa hari ini?</p>
+                </div>
+            </div>
+
+            <div class="time-selector" role="group" aria-labelledby="time-selector-label">
+                <h3 id="time-selector-label">⏰ Pesan untuk:</h3>
+                <div class="time-buttons" role="list">
+                    <button class="time-btn active" type="button" data-time="Istirahat 1" data-interval="10.00-10.30" role="listitem" aria-pressed="true">Istirahat 1<div style="font-size: 0.8rem; opacity: 0.8;">10.00-10.30</div></button>
+                    <button class="time-btn" type="button" data-time="Istirahat 2" data-interval="12.30-13.00" role="listitem" aria-pressed="false">Istirahat 2<div style="font-size: 0.8rem; opacity: 0.8;">12.30-13.00</div></button>
+                </div>
+            </div>
+
+            <div class="popular-menu" role="region" aria-label="Menu Populer">
+                <h3>🔥 Menu Populer:</h3>
+                <div tabindex="0" class="menu-item" role="button" aria-describedby="menu1desc" data-name="Nasi Gudeg" data-price="8000" data-stock="15">
+                    <div class="menu-icon" aria-hidden="true">🍱</div>
+                    <div class="menu-info">
+                        <div class="menu-name" id="menu1desc">Nasi Gudeg</div>
+                        <div class="menu-price">Rp 8.000</div>
+                        <div class="stock-info">Stock: 15 porsi</div>
+                    </div>
+                </div>
+                <div tabindex="0" class="menu-item" role="button" aria-describedby="menu2desc" data-name="Es Teh Manis" data-price="3000" data-stock="25">
+                    <div class="menu-icon" aria-hidden="true">🧋</div>
+                    <div class="menu-info">
+                        <div class="menu-name" id="menu2desc">Es Teh Manis</div>
+                        <div class="menu-price">Rp 3.000</div>
+                        <div class="stock-info">Stock: 25 gelas</div>
+                    </div>
+                </div>
+                <div tabindex="0" class="menu-item" role="button" aria-describedby="menu3desc" data-name="Roti Bakar" data-price="5000" data-stock="12">
+                    <div class="menu-icon" aria-hidden="true">🍞</div>
+                    <div class="menu-info">
+                        <div class="menu-name" id="menu3desc">Roti Bakar</div>
+                        <div class="menu-price">Rp 5.000</div>
+                        <div class="stock-info">Stock: 12 potong</div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="view-all-btn" type="button" aria-label="Lihat Semua Menu">Lihat Semua Menu →</button>
+        </section>
+
+        <!-- Menu Screen -->
+        <section class="screen" id="screen-menu" tabindex="-1" aria-label="Layar Menu Lengkap">
+            <div class="search-bar">
+                <input type="search" id="menu-search" class="search-input" placeholder="🔍 Cari makanan..." aria-label="Cari makanan" />
+            </div>
+
+            <div class="categories" role="list" aria-label="Kategori Menu">
+                <button class="category-btn active" type="button" role="listitem" aria-pressed="true" data-category="nasi">🍚 Nasi & Lauk</button>
+                <button class="category-btn" type="button" role="listitem" aria-pressed="false" data-category="minuman">🥤 Minuman</button>
+                <button class="category-btn" type="button" role="listitem" aria-pressed="false" data-category="cemilan">🍰 Cemilan</button>
+            </div>
+
+            <div class="menu-grid" aria-live="polite" aria-atomic="true" id="menu-grid">
+                <div class="menu-card" data-category="nasi">
+                    <div class="menu-card-info">
+                        <div class="menu-name">Nasi Gudeg</div>
+                        <div class="menu-price">Rp 8.000</div>
+                        <div class="stock-info">Stock: 15 porsi</div>
+                    </div>
+                    <button class="add-btn" type="button">+ Tambah</button>
+                </div>
+                <div class="menu-card" data-category="nasi">
+                    <div class="menu-card-info">
+                        <div class="menu-name">Nasi Pecel</div>
+                        <div class="menu-price">Rp 7.000</div>
+                        <div class="stock-info">Stock: 20 porsi</div>
+                    </div>
+                    <button class="add-btn" type="button">+ Tambah</button>
+                </div>
+                <div class="menu-card" data-category="minuman">
+                    <div class="menu-card-info">
+                        <div class="menu-name">Es Teh Manis</div>
+                        <div class="menu-price">Rp 3.000</div>
+                        <div class="stock-info">Stock: 25 gelas</div>
+                    </div>
+                    <button class="add-btn" type="button">+ Tambah</button>
+                </div>
+                <div class="menu-card" data-category="minuman">
+                    <div class="menu-card-info">
+                        <div class="menu-name">Es Jeruk</div>
+                        <div class="menu-price">Rp 4.000</div>
+                        <div class="stock-info">Stock: 18 gelas</div>
+                    </div>
+                    <button class="add-btn" type="button">+ Tambah</button>
+                </div>
+                <div class="menu-card" data-category="cemilan">
+                    <div class="menu-card-info">
+                        <div class="menu-name">Roti Bakar</div>
+                        <div class="menu-price">Rp 5.000</div>
+                        <div class="stock-info">Stock: 12 potong</div>
+                    </div>
+                    <button class="add-btn" type="button">+ Tambah</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Cart Screen -->
+        <section class="screen" id="screen-cart" tabindex="-1" aria-label="Layar Keranjang Pesanan">
+            <div class="order-time" aria-live="polite" aria-atomic="true">
+                <h3>Untuk: <span id="selected-time">Istirahat 1</span></h3>
+                <p>(<span id="selected-interval">10.00 - 10.30 WIB</span>)</p>
+            </div>
+
+            <div class="cart-items" id="cart-items" role="list" aria-label="Daftar item pesanan">
+                <!-- Cart items injected here -->
+            </div>
+
+            <div class="total-section" aria-live="polite" aria-atomic="true">
+                <div class="total-row">
+                    <span>Subtotal:</span>
+                    <span id="subtotal">Rp 0</span>
+                </div>
+                <div class="total-row total-final">
+                    <span>Total:</span>
+                    <span id="total">Rp 0</span>
+                </div>
+            </div>
+
+            <div class="payment-section" role="radiogroup" aria-label="Cara Bayar">
+                <h3 style="margin-bottom: 15px;">Cara Bayar:</h3>
+                <div class="payment-option selected" tabindex="0" role="radio" aria-checked="true" aria-label="Tunai di Kantin">
+                    <input type="radio" class="radio" name="payment" checked tabindex="-1" />
+                    <div>
+                        <div style="font-weight: 600;">💵 Tunai di Kantin</div>
+                        <div style="font-size: 0.9rem; color: #666;">Bayar saat ambil pesanan</div>
+                    </div>
+                </div>
+                <div class="payment-option" tabindex="0" role="radio" aria-checked="false" aria-label="Transfer Digital">
+                    <input type="radio" class="radio" name="payment" tabindex="-1" />
+                    <div>
+                        <div style="font-weight: 600;">💳 Transfer Digital</div>
+                        <div style="font-size: 0.9rem; color: #666;">DANA, GoPay, OVO</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-box" aria-live="polite" aria-atomic="true">
+                <strong>📍 Estimasi:</strong> Pesanan siap dalam 10 menit<br/>
+                <strong>📢 Info:</strong> Kamu akan dapat notifikasi saat pesanan siap
+            </div>
+
+            <button class="order-btn" type="button" aria-label="Pesan Sekarang">🚀 PESAN SEKARANG</button>
+        </section>
+    </main>
+
+    <nav class="bottom-nav" role="navigation" aria-label="Navigasi utama aplikasi">
+        <button type="button" id="nav-home" aria-label="Beranda" aria-current="page" class="active" tabindex="0">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+            Home
+        </button>
+        <button type="button" id="nav-menu" aria-label="Menu" tabindex="-1">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13h2v-2H3v2zm0 6h2v-2H3v2zm4 0h14v-2H7v2zm0-6h14v-2H7v2zm0-6v2h14V7H7z"/></svg>
+            Menu
+        </button>
+        <button type="button" id="nav-cart" aria-label="Keranjang" tabindex="-1">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 18c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm10 0c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zM7.364 13l.6-3h8.889c.573 0 1.064-.38 1.21-.928l1.922-7.46-1.738-.45-1.5 5.846H8.273l-.86-3.897H3v2h3.055z"/></svg>
+            Cart
+        </button>
+        <!-- Profil tab intentionally removed for no profile screen -->
+    </nav>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const screens = {
+            login: document.getElementById('screen-login'),
+            home: document.getElementById('screen-home'),
+            menu: document.getElementById('screen-menu'),
+            cart: document.getElementById('screen-cart')
+        };
+        const header = document.getElementById('app-header');
+        const loginForm = document.getElementById('login-form');
+        const nimInput = loginForm.querySelector('#nim');
+        const namaInput = loginForm.querySelector('#nama');
+        const nimError = document.getElementById('nim-error');
+        const namaError = document.getElementById('nama-error');
+        const loginBtn = loginForm.querySelector('button.login-btn');
+
+        const usernameDisplay = document.getElementById('username');
+        const timeButtons = document.querySelectorAll('.time-btn');
+        const popularMenuItems = document.querySelectorAll('.popular-menu .menu-item');
+        const viewAllBtn = document.querySelector('.view-all-btn');
+
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const searchInput = document.getElementById('menu-search');
+        const menuGrid = document.getElementById('menu-grid');
+
+        const cartItemsContainer = document.getElementById('cart-items');
+        const selectedTimeDisplay = document.getElementById('selected-time');
+        const selectedIntervalDisplay = document.getElementById('selected-interval');
+        const subtotalDisplay = document.getElementById('subtotal');
+        const totalDisplay = document.getElementById('total');
+        const paymentOptions = document.querySelectorAll('.payment-option');
+        const orderBtn = document.querySelector('.order-btn');
+
+        const nav = document.querySelector('nav.bottom-nav');
+        const navButtons = {
+            home: document.getElementById('nav-home'),
+            menu: document.getElementById('nav-menu'),
+            cart: document.getElementById('nav-cart')
+        };
+
+        let user = {
+            nim: '',
+            nama: '',
+        };
+        let selectedTimeSlot = {
+            time: 'Istirahat 1',
+            interval: '10.00 - 10.30'
+        };
+        let cart = [];
+        let loggedIn = false;
+
+        function formatPrice(num) {
+            return 'Rp ' + num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        function switchScreen(screenName) {
+            Object.keys(screens).forEach(name => {
+                if (name === screenName) {
+                    screens[name].classList.add('active');
+                    screens[name].setAttribute('tabindex', '0');
+                    screens[name].focus();
+                } else {
+                    screens[name].classList.remove('active');
+                    screens[name].setAttribute('tabindex', '-1');
+                }
+            });
+            switch(screenName) {
+                case 'login': header.textContent = 'Login'; break;
+                case 'home': header.textContent = 'Beranda'; break;
+                case 'menu': header.textContent = 'Menu Lengkap'; break;
+                case 'cart': header.textContent = 'Keranjang Pesanan'; break;
+            }
+            Object.keys(navButtons).forEach(key => {
+                const btn = navButtons[key];
+                if (key === screenName) {
+                    btn.classList.add('active');
+                    btn.setAttribute('aria-current', 'page');
+                    btn.tabIndex = 0;
+                } else {
+                    btn.classList.remove('active');
+                    btn.removeAttribute('aria-current');
+                    btn.tabIndex = -1;
+                }
+            });
+        }
+
+        function validateLogin() {
+            let valid = true;
+            if (!nimInput.value.match(/^\d{13}$/)) {
+                nimError.style.display = 'block';
+                nimInput.setAttribute('aria-invalid', 'true');
+                valid = false;
+            } else {
+                nimError.style.display = 'none';
+                nimInput.setAttribute('aria-invalid', 'false');
+            }
+            if (namaInput.value.trim().length === 0) {
+                namaError.style.display = 'block';
+                namaInput.setAttribute('aria-invalid', 'true');
+                valid = false;
+            } else {
+                namaError.style.display = 'none';
+                namaInput.setAttribute('aria-invalid', 'false');
+            }
+            loginBtn.disabled = !valid;
+            return valid;
+        }
+
+        nimInput.addEventListener('input', validateLogin);
+        namaInput.addEventListener('input', validateLogin);
+
+        loginForm.addEventListener('submit', e => {
+            e.preventDefault();
+            if (!validateLogin()) return;
+            user.nim = nimInput.value;
+            user.nama = namaInput.value.trim();
+            loggedIn = true;
+            usernameDisplay.textContent = `Hai, ${user.nama}!`;
+            cart = [];
+            updateCartUI();
+            nav.classList.add('visible');
+            screens.login.style.display = 'none';
+            switchScreen('home');
+        });
+
+        timeButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                timeButtons.forEach(b => {
+                    b.classList.remove('active');
+                    b.setAttribute('aria-pressed', 'false');
+                });
+                btn.classList.add('active');
+                btn.setAttribute('aria-pressed', 'true');
+                selectedTimeSlot.time = btn.dataset.time;
+                selectedTimeSlot.interval = btn.dataset.interval.replace('-', ' - ');
+                selectedTimeDisplay.textContent = selectedTimeSlot.time;
+                selectedIntervalDisplay.textContent = selectedTimeSlot.interval + ' WIB';
+            });
+        });
+
+        popularMenuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                if (!loggedIn) {
+                    alert('Silakan login terlebih dahulu.');
+                    window.location.reload();
+                    return;
+                }
+                switchScreen('menu');
+                header.textContent = 'Menu Lengkap';
+                setActiveCategory('nasi');
+                searchInput.value = item.dataset.name || '';
+                filterMenu();
+            });
+        });
+
+        viewAllBtn.addEventListener('click', () => {
+            if (!loggedIn) {
+                alert('Silakan login terlebih dahulu.');
+                window.location.reload();
+                return;
+            }
+            switchScreen('menu');
+            header.textContent = 'Menu Lengkap';
+            setActiveCategory('');
+            searchInput.value = '';
+            filterMenu();
+        });
+
+        function setActiveCategory(category) {
+            categoryButtons.forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.category === category);
+                btn.setAttribute('aria-pressed', btn.dataset.category === category ? 'true' : 'false');
+            });
+        }
+        categoryButtons.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const cat = btn.dataset.category;
+                setActiveCategory(cat);
+                filterMenu();
+            });
+        });
+
+        function filterMenu() {
+            const activeBtn = [...categoryButtons].find(btn => btn.classList.contains('active'));
+            const categoryFilter = activeBtn ? activeBtn.dataset.category : '';
+            const searchText = searchInput.value.toLowerCase().trim();
+
+            const cards = menuGrid.querySelectorAll('.menu-card');
+            cards.forEach(card => {
+                const name = card.querySelector('.menu-name').textContent.toLowerCase();
+                const category = card.dataset.category.toLowerCase();
+                const matchesCategory = !categoryFilter || category === categoryFilter;
+                const matchesSearch = name.includes(searchText);
+                card.style.display = (matchesCategory && matchesSearch) ? 'flex' : 'none';
+            });
+        }
+        searchInput.addEventListener('input', filterMenu);
+
+        function updateCartUI() {
+            cartItemsContainer.innerHTML = '';
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p style="color:#666; font-style: italic;">Keranjang kosong.</p>';
+                subtotalDisplay.textContent = 'Rp 0';
+                totalDisplay.textContent = 'Rp 0';
+                return;
+            }
+            let subtotal = 0;
+            cart.forEach(({name, price, qty}, idx) => {
+                const itemTotal = price * qty;
+                subtotal += itemTotal;
+
+                const itemElem = document.createElement('div');
+                itemElem.className = 'cart-item';
+                itemElem.setAttribute('role', 'listitem');
+                itemElem.innerHTML = `
+                    <div>
+                        <div class="menu-name">${name}</div>
+                        <div style="color: #666; font-size: 0.9rem;">${formatPrice(price)} x ${qty}</div>
+                    </div>
+                    <div class="quantity-controls">
+                        <button class="qty-btn" aria-label="Kurangi jumlah ${name}" data-index="${idx}">-</button>
+                        <span aria-live="polite" aria-atomic="true">${qty}</span>
+                        <button class="qty-btn" aria-label="Tambah jumlah ${name}" data-index="${idx}">+</button>
+                    </div>
+                `;
+                cartItemsContainer.appendChild(itemElem);
+            });
+            subtotalDisplay.textContent = formatPrice(subtotal);
+            totalDisplay.textContent = formatPrice(subtotal);
+        }
+
+        function addToCart(name, price) {
+            const existing = cart.find(item => item.name === name);
+            if (existing) {
+                existing.qty++;
+            } else {
+                cart.push({name, price, qty: 1});
+            }
+            updateCartUI();
+        }
+
+        menuGrid.addEventListener('click', (e) => {
+            if (!loggedIn) {
+                alert('Silakan login terlebih dahulu.');
+                window.location.reload();
+                return;
+            }
+            if (e.target.classList.contains('add-btn')) {
+                const card = e.target.closest('.menu-card');
+                if (!card) return;
+                const name = card.querySelector('.menu-name').textContent;
+                const priceText = card.querySelector('.menu-price').textContent;
+                const price = parseInt(priceText.replace(/[^\d]/g, ''), 10);
+                addToCart(name, price);
+
+                e.target.textContent = '✓ Ditambah';
+                e.target.disabled = true;
+                setTimeout(() => {
+                    e.target.textContent = '+ Tambah';
+                    e.target.disabled = false;
+                }, 1000);
+            }
+        });
+
+        cartItemsContainer.addEventListener('click', e => {
+            if (e.target.classList.contains('qty-btn')) {
+                const idx = parseInt(e.target.dataset.index, 10);
+                if (isNaN(idx)) return;
+
+                if (e.target.textContent === '+') {
+                    cart[idx].qty++;
+                } else if (e.target.textContent === '-') {
+                    if (cart[idx].qty > 1) {
+                        cart[idx].qty--;
+                    }
+                }
+                updateCartUI();
+            }
+        });
+
+        paymentOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                paymentOptions.forEach(o => {
+                    o.classList.remove('selected');
+                    o.setAttribute('aria-checked', 'false');
+                    o.querySelector('input[type="radio"]').checked = false;
+                });
+                option.classList.add('selected');
+                option.setAttribute('aria-checked', 'true');
+                option.querySelector('input[type="radio"]').checked = true;
+            });
+            option.addEventListener('keydown', e => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    option.click();
+                }
+            });
+        });
+
+        orderBtn.addEventListener('click', () => {
+            if (!loggedIn) {
+                alert('Silakan login terlebih dahulu.');
+                window.location.reload();
+                return;
+            }
+            if (cart.length === 0) {
+                alert('Keranjangmu kosong! Silakan pilih menu terlebih dahulu.');
+                return;
+            }
+            alert('Pesanan berhasil dikirim!\nTerima kasih sudah memesan di Kantin UNPAM.');
+            cart = [];
+            updateCartUI();
+            switchScreen('home');
+        });
+
+        navButtons.home.addEventListener('click', () => {
+            if (!loggedIn) {
+                window.location.reload();
+            } else {
+                switchScreen('home');
+            }
+        });
+        navButtons.menu.addEventListener('click', () => {
+            if (!loggedIn) {
+                window.location.reload();
+            } else {
+                switchScreen('menu');
+                header.textContent = 'Menu Lengkap';
+            }
+        });
+        navButtons.cart.addEventListener('click', () => {
+            if (!loggedIn) {
+                window.location.reload();
+            } else {
+                switchScreen('cart');
+                header.textContent = 'Keranjang Pesanan';
+            }
+        });
+
+        popularMenuItems.forEach(item => {
+            item.addEventListener('keydown', e => {
+                if (e.key === 'Enter') {
+                    item.click();
+                }
+            });
+        });
+
+        validateLogin();
+        nav.classList.remove('visible');
+    });
+</script>
+</body>
+</html>
